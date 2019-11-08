@@ -1,4 +1,4 @@
-export const theme = {
+const theme = {
     colors: {
         black: '#111',
         white: '#FFF',
@@ -22,3 +22,5 @@ export const theme = {
         titleType: 'cursive'
     }
 }
+
+export default theme;

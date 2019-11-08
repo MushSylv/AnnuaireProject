@@ -1,5 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux'
+import { PropTypes } from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles';
+import { openAction } from './../../../Stores/authReducer/auth.action'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -24,10 +27,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function MenuAppBar() {
+const propTypes = {
+  open: PropTypes.func.isRequired,
+}
+
+const Navbar = ({open, isConnected }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+
+  const handleMenu = event => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -45,6 +55,7 @@ export default function MenuAppBar() {
                 aria-label="account of current user"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
+                onClick={handleMenu}
                 color="inherit"
               >
                 <AccountCircle />
@@ -64,8 +75,7 @@ export default function MenuAppBar() {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+               { !isConnected && <MenuItem onClick={handleClose}>Connexion</MenuItem> }
               </Menu>
             </div>
         </Toolbar>
@@ -73,3 +83,16 @@ export default function MenuAppBar() {
     </div>
   );
 }
+
+Navbar.propTypes = propTypes
+
+const mapStateToProps = ({ authReducer }) => ({
+  open: authReducer.open,
+  isConnected: authReducer.isConnected
+})
+
+const mapDispatchToProps = {
+  open: openAction,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar)
